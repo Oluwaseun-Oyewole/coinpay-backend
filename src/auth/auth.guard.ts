@@ -8,6 +8,8 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { ROLES_KEY } from 'src/users/decorator/roles.decorators';
+import { Role } from 'src/users/role/enum';
 import { IS_PUBLIC_KEY } from './decorator/public.decorator';
 
 @Injectable()
@@ -30,6 +32,15 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (!requiredRoles) {
+      return true;
+    }
 
     if (isPublic) {
       return true;

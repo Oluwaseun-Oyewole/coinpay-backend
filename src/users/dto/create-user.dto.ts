@@ -1,4 +1,12 @@
-import { IsNumber, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
+import { Role } from '../role/enum';
 
 export class CreateUserDto {
   @IsNumber()
@@ -11,4 +19,8 @@ export class CreateUserDto {
       'password must contain uppercase, lowercase, number and special character',
   })
   password: string;
+
+  @IsEnum(Role, { message: 'Role must be selected' })
+  @IsOptional()
+  role: Role;
 }
