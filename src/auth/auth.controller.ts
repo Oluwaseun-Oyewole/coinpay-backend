@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('login')
   async login(
     @Body('phoneNumber') phoneNumber: number,
@@ -13,7 +15,8 @@ export class AuthController {
     return await this.authService.signIn(phoneNumber, password);
   }
 
-  @Get()
+  // @UseGuards(AuthGuard)
+  @Get('user')
   async users() {
     return 'all users';
   }
