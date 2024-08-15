@@ -21,7 +21,14 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  async resetPassword(@Body('phoneNumber') phoneNumber: number) {
+  async forgotPassword(@Body('phoneNumber') phoneNumber: number) {
     return await this.authService.forgotPassword(phoneNumber);
+  }
+  @Post('reset-password')
+  async resetPassword(
+    @Body('phoneNumber') phoneNumber: number,
+    @Body('password') password: string,
+  ) {
+    return await this.authService.passwordReset(phoneNumber, password);
   }
 }

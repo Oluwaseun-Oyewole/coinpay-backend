@@ -54,4 +54,19 @@ export class AuthService {
     await this.userService.sendResetLink(phone, reset_link);
     return { message: 'Reset link sent', reset_link };
   }
+
+  async passwordReset(
+    phoneNumber: number,
+    password: string,
+  ): Promise<{ message: string }> {
+    const pass = await this.userService.hashedPassword(password);
+    await this.userService.userModel.findOneAndUpdate(
+      {
+        phoneNumber,
+      },
+      { password: pass },
+      { new: true },
+    );
+    return { message: 'Password reset successful' };
+  }
 }

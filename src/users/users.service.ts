@@ -12,7 +12,7 @@ import { User, UserDocument } from './schema/user.schema';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel('user') private userModel: Model<UserDocument>,
+    @InjectModel('user') public userModel: Model<UserDocument>,
     @InjectModel('otp') private otpModel: Model<Otp>,
     private configService: ConfigService,
     private readonly twilioClient: Twilio,
