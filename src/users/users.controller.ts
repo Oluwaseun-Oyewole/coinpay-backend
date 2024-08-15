@@ -40,6 +40,7 @@ export class UsersController {
       id: user._id,
       role: user.role,
       otp: user.otp,
+      message: 'Account successfully crated',
     };
     await this.userService.sendOTP(phoneNumber, user?.otp);
     return result;
@@ -47,7 +48,7 @@ export class UsersController {
 
   @Post('resendOtp')
   async resendOTP(@Body('phone') phone: number) {
-    return await this.userService.resendOtp(phone);
+    await this.userService.resendOtp(phone);
   }
 
   @Post('verifyOtp')

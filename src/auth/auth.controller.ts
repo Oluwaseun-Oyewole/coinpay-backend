@@ -1,12 +1,11 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post('login')
   async login(
     @Body('phoneNumber') phoneNumber: number,
@@ -19,5 +18,10 @@ export class AuthController {
   @Get('user')
   async users() {
     return 'all users';
+  }
+
+  @Post('forgot-password')
+  async resetPassword(@Body('phoneNumber') phoneNumber: number) {
+    return await this.authService.forgotPassword(phoneNumber);
   }
 }

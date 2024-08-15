@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
@@ -8,6 +9,7 @@ export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(phone: number, password: string): Promise<any> {
@@ -37,5 +39,19 @@ export class AuthService {
       return { access_token: await this.jwtService.signAsync(payload) };
     }
     throw new UnauthorizedException();
+  }
+
+  async forgotPassword(
+    phone: number,
+  ): Promise<{ message: string; reset_link: string }> {
+    const user: ReturnType<any> =
+      await this.userService.findOneByPhoneNumber(phone);
+    const jwtUserId = await this.jwtService.signAsync({
+      sub: user._id,
+      phoneNumber: user.phoneNumber,
+    });
+    const reset_link = `${this.configService.get<string>('LOCAL_URL')}/auth/reset-password/${jwtUserId}`;
+    await this.userService.sendResetLink(phone, reset_link);
+    return { message: 'Reset link sent', reset_link };
   }
 }

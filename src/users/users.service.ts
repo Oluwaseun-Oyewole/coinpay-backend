@@ -86,6 +86,14 @@ export class UsersService {
     });
   }
 
+  async sendResetLink(phoneNumber: number, code: string) {
+    return await this.twilioClient.messages.create({
+      body: `Your password reset link is  ${code}`,
+      to: `+234${phoneNumber}`,
+      from: this.configService.get<string>('TWILIO_SENDER_PHONE_NUMBER'),
+    });
+  }
+
   async verifyOTP(phoneNumber: number, otpCode: any) {
     const user = await this.findOneByPhoneNumber(phoneNumber);
     const otp = user.otp.find((otp) => otp === otpCode);
