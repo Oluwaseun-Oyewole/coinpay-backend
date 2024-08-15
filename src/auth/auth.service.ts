@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
+import { ResetPasswordUserDto } from './dto/reset-password';
 
 @Injectable()
 export class AuthService {
@@ -57,7 +58,7 @@ export class AuthService {
 
   async passwordReset(
     phoneNumber: number,
-    password: string,
+    { password }: ResetPasswordUserDto,
   ): Promise<{ message: string }> {
     const pass = await this.userService.hashedPassword(password);
     await this.userService.userModel.findOneAndUpdate(
